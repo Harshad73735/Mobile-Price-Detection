@@ -1,0 +1,90 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+data = pd.read_csv('data_mobile_price_range.csv')
+
+# Print the first few rows of the dataset
+print("Full Dataset:")
+print(data.head())
+
+# Split the data into features (X) and target (y)
+X = data.drop('price_range', axis=1)
+y = data['price_range']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Print the training and testing datasets
+print("\nTraining Set Features:")
+print(X_train.head())
+print("\nTraining Set Labels:")
+print(y_train.head())
+print("\nTesting Set Features:")
+print(X_test.head())
+print("\nTesting Set Labels:")
+print(y_test.head())
+
+# Predictions on the training set
+y_train_pred = rf_classifier.predict(X_train)
+
+# Predictions on the test set
+y_test_pred = rf_classifier.predict(X_test)
+
+# Plot regression graph for training set
+plt.figure(figsize=(8, 6))
+sns.regplot(x=y_train, y=y_train_pred, scatter_kws={'alpha':0.5})
+plt.xlabel('Actual Price Range')
+plt.ylabel('Predicted Price Range')
+plt.title('Regression Plot - Training Set')
+plt.grid(True)
+plt.show()
+
+# Plot regression graph for test set
+plt.figure(figsize=(8, 6))
+sns.regplot(x=y_test, y=y_test_pred, scatter_kws={'alpha':0.5})
+plt.xlabel('Actual Price Range')
+plt.ylabel('Predicted Price Range')
+plt.title('Regression Plot - Test Set')
+plt.grid(True)
+plt.show()
+
+# Initialize the Random Forest Classifier
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Train the model
+rf_classifier.fit(X_train, y_train)
+
+# Predictions on the test set
+y_pred = rf_classifier.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print('\nAccuracy:', accuracy)
+
+# Print classification report
+print(classification_report(y_test, y_pred))
+
+# Compute confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print('Confusion Matrix:')
+print(conf_matrix)
+
+# Function to get user input
+def get_user_input():
+    features = {}
+    for column in X.columns:
+        value = input(f"Enter {column}: ")
+        features[column] = [float(value)]  # assuming all values are numeric
+    return pd.DataFrame(features)
+
+# Get user input
+user_input = get_user_input()
+
+# Make prediction using the trained model
+predicted_price_range = rf_classifier.predict(user_input)
+print("\nPredicted Price Range:", predicted_price_range)
